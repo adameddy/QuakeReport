@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     android:padding="16dp">
 
     <TextView
@@ -11,23 +10,48 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_gravity="center"
-        android:hint="5.0"/>
+        android:layout_gravity="center_vertical"
+        tools:text="8.9" />
 
-    <TextView
-        android:id="@+id/location"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:hint="Paris"/>
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="2">
 
-    <TextView
-        android:id="@+id/date"
+        <TextView
+            android:id="@+id/location_offset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="74km NW of" />
+        <TextView
+            android:id="@+id/location_primary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="San Francisco, CA" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:hint="Feb 3, 2017"/>
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Mar 6, 2010" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="3:00 PM" />
+
+    </LinearLayout>
 
 </LinearLayout>

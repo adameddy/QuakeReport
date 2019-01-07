@@ -5,8 +5,6 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import java.util.ArrayList;
 
@@ -60,15 +58,16 @@ public final class QueryUtils {
                 JSONObject properties = feature.optJSONObject("properties");
                 String magnitude = properties.getString("mag");
                 String location = properties.getString("place");
-                String date = properties.getString("time");
+                //String date = properties.getString("time");
+                Long time = properties.getLong("time");
 
                 // Convert UNIX date to simple date
-                Date dateObject = new Date(Long.parseLong(date));
-                SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM DD, yyyy");
-                date = dateFormatter.format(dateObject);
+//                Date dateObject = new Date(Long.parseLong(date));
+//                SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM DD, yyyy");
+//                date = dateFormatter.format(dateObject);
 
                 // Add to earthquakes list array
-                earthquakes.add(new Earthquake(magnitude,location,date));
+                earthquakes.add(new Earthquake(magnitude,location,time));
             }
         } catch (JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
