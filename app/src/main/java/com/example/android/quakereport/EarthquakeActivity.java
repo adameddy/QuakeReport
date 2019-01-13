@@ -16,14 +16,18 @@
 package com.example.android.quakereport;
 
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -48,6 +52,12 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
     /** TextView that is displayed when the list is empty */
     private TextView mEmptyStateTextView;
 
+    /** TextView that is displayed when the device has no internet */
+    private TextView mNoInternetTextView;
+
+    /** ProgressBar that is displayed when work is being done */
+    private ProgressBar mProgressView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +70,20 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
         earthquakeListView.setEmptyView(mEmptyStateTextView);
 
+        // Find a reference to the empty TextView
+        mNoInternetTextView = (TextView) findViewById(R.id.no_internet_view);
+        earthquakeListView.setEmptyView(mNoInternetTextView);
+
+        // Find a reference to the progress bar
+        mProgressView = (ProgressBar) findViewById(R.id.progress);
+
         // Create a new adapter that takes an empty list of earthquakes as input
         mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
+
+        // Check device network status
+        ConnectivityManager cm = (ConnectivityManager)this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
 
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
@@ -87,7 +109,17 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         // Initialize the loader. Pass in the int ID constant defined above and pass in null for
         // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
         // because this activity implements the LoaderCallbacks interface).
-        loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
+        if(isConnected == true){
+            loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
+        } else {
+            // Make progress bar view GONE
+            mProgressView.setVisibility(View.GONE);
+            // Display No Connection TextView
+            // Set empty state text to display "No earthquakes found."
+            mNoInternetTextView.setText(R.string.no_internet);
+            mNoInternetTextView.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override
@@ -98,8 +130,8 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
 
     @Override
     public void onLoadFinished(Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
-        // Set empty state text to display "No earthquakes found."
-        mEmptyStateTextView.setText(R.string.no_earthquakes);
+        // Make progress bar view GONE
+        mProgressView.setVisibility(View.GONE);
 
         // Clear the adapter of previous earthquake data
         mAdapter.clear();
@@ -108,6 +140,10 @@ public class EarthquakeActivity extends AppCompatActivity implements LoaderManag
         // data set. This will trigger the ListView to update.
         if (earthquakes != null && !earthquakes.isEmpty()) {
             mAdapter.addAll(earthquakes);
+        } else{
+            // Set empty state text to display "No earthquakes found."
+            mEmptyStateTextView.setText(R.string.no_earthquakes);
+            mEmptyStateTextView.setVisibility(View.VISIBLE);
         }
     }
 
